@@ -12,12 +12,14 @@ import { filter, map } from 'rxjs/operators';
 export class BreadcrumbsComponent implements OnInit, OnDestroy {
 
   public tituloSubs$:any = Subscription;
+  public titulo:string = '';
 
   constructor( private router: Router) {
 
     this.tituloSubs$ =  this.getArgumentosRuta()
-        .subscribe( data => {
-                console.log(data);
+        .subscribe( ({ titulo }) => {
+                this.titulo = titulo;
+                document.title = `AdminPro - ${titulo}`;
               }
     );
    
@@ -29,9 +31,9 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
    getArgumentosRuta(){
     return this.router.events.
         pipe( 
-          filter( event => event instanceof ActivatedRouteSnapshot ),/* 
+          filter( (event): event is ActivationEnd => event instanceof ActivationEnd ),
           filter( (event: ActivationEnd) => event.snapshot.firstChild == null),
-          map( (event: ActivationEnd) => event.snapshot.data) */
+          map( (event: ActivationEnd) => event.snapshot.data)
           );
    }
 
