@@ -9,6 +9,7 @@ import { RegisterForm } from '../interfaces/register-form.interface';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
+import { CargarUsuario } from '../interfaces/cargar-usarios.interface';
 
 const base_url = environment.base_url;
 
@@ -56,6 +57,15 @@ export class UsuarioService {
     return this.usuario.uid || '';
   }
 
+  get headers(){
+
+    return {
+      headers: {
+        'x-token': this.token
+      }
+    }
+  }
+
   logout(){
 
     localStorage.removeItem('token');
@@ -98,11 +108,7 @@ export class UsuarioService {
       imageUrl: ''
     };
 
-    return this.http.put(`${ base_url }/usuarios/${this.uid}`, data,  {
-      headers: {
-        'x-token': this.token
-      }
-    });
+    return this.http.put(`${ base_url }/usuarios/${this.uid}`, data, this.headers);
 
   }
 
@@ -140,6 +146,38 @@ export class UsuarioService {
                     })
                   )
     
+  }
+
+  cargarUsuarios( desde: number ){
+    const url = `${ base_url }/usuarios?desde=${ desde }`;
+    return this.http.get<CargarUsuario>( url, this.headers)
+          .pipe(
+            map( res => {
+              
+              const usuarios = res.usuarios.map(
+                user => new Usuario(user.nombre, user.email, '', user.img, user.google, user.role, user.uid)
+              );
+                
+              return {
+                total: res.total,
+                usuarios
+              };
+              
+            })
+          )
+  }
+
+  eliminarUsuario( usuario: Usuario){
+
+    const url = `${ base_url }/usuarios/${usuario.uid}`;
+    return this.http.delete( url, this.headers);
+    
+  }
+
+  guardarUsuario( usuario: Usuario ){
+
+    return this.http.put(`${ base_url }/usuarios/${usuario.uid}`, usuario, this.headers);
+
   }
 
 
