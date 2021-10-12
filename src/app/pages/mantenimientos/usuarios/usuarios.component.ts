@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 export class UsuariosComponent implements OnInit, OnDestroy {
 
   public totalUsuarios: number = 0;
-  public usuarios: Usuario[] = [];
+  public usuarios: any[] = [];
   public usuariosTemp: Usuario[] = [];
   public desde: number = 0;
   public cargando: boolean = true;
@@ -74,7 +74,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.busquedaServicios.buscar('usuarios', termino)
         .subscribe( resultados=> {
           
-          this.usuarios = resultados
+          this.usuarios = resultados;
           
         })
     
