@@ -10,7 +10,7 @@ const routes: Routes = [
     { 
         path: 'dashboard', component: PagesComponent, 
         canActivate: [AuthGuard],
-        canLoad: [],
+        canLoad: [ AuthGuard ],
         loadChildren: () => import('./child-routes.module').then( m => m.ChildRoutesModule)
       },
     
